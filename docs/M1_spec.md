@@ -19,29 +19,38 @@ The objective of this project is to develop an accessible, mobile-first interfac
 ---
 
 ## 📱 Wireframe Overview
-### Mobile View
-- Header with app title and “Add Transaction” button.
-- List of transactions stacked vertically.
-- Sticky bottom bar showing **Total Balance**.
 
-### Tablet/Desktop View
+### Mobile View (~360px)
+-Single column layout
+-Transactions displayed as cards
+-Add/Edit form at top or as a modal
+-Dashboard stats at top
+
+### Tablet (~768px)
 - Two-column layout:
-    - Left side: transaction list.
-    - Right side: summary (charts, filters, totals).
+- Form on left, transaction table on right
+- Dashboard above or alongside the table
 
+## Desktop (~1024px)
+-Sidebar navigation (Categories/Settings/About)
+-Main table with transactions 
+-Dashboard visible at top or side
+-Add/Edit form as modal or fixed panel
 ---
 
 ## 🔍 Regex Validation & Search Plan
-We’ll use **4+ regex validations** in form inputs and search:
 
-| Field | Regex Example | Description |
-|-------|---------------|-----|
-| Amount | `/^\d+(\.\d{1,2})?$/` | Validates numeric amount (e.g., 1500.50) |
-| Date | `/^\d{4}-\d{2}-\d{2}$/` | Validates ISO date format (YYYY-MM-DD) |
-| Category | `/^[A-Za-z\s]+$/` | Ensures category contains only letters/spaces |
-| Description | `/^.{0,50}$/` | Limits note length to 50 characters |
-|Search | `/food\|rent\|transport/i` | Basic OR search for categories |
-| Advanced Search | `/^(?=.*rent)(?=.*2025)/i` | Lookahead example – finds records mentioning both "rent" and "2025" |
+| Field          | Regex Example | Description |
+|----------------|-----------|-----|
+| Amount         | `/^(0`|Accept numbers ≥ 0, max 2 decimals |
+| Date           | `/^\d{4}-(0[1-9]` | Validates ISO date format (YYYY-MM-DD) |
+| Category       | `/^[A-Za-z]+(?:[ -][A-Za-z]+)*$/` | Ensures category contains only letters/spaces |
+| Description    | `/^\S(?:.*\S)?$/` |Letters only, spaces and hyphens allowed |
+| Search         | `/food\|rent\|transport/i` | Basic OR search for categories |
+| Advanced Regex | `/\b(\w+)\s+\1\b/` | Detect duplicate words in description |
+
+
+
 
 ---
 
@@ -53,3 +62,35 @@ Data is stored in `localStorage` as JSON:
     { "id": 1, "type": "expense", "amount": 1500, "category": "Rent", "date": "2025-10-01", "note": "October rent" }
   ]
 }
+```
+
+## 📊Data Model
+
+Each transaction record will have the following structure:
+
+```json
+{
+  "id": "txn_001",
+  "description": "Lunch at cafeteria",
+  "amount": 12.50,
+  "category": "Food",
+  "date": "2025-09-25",
+  "createdAt": "2025-09-25T10:00:00Z",
+  "updatedAt": "2025-09-25T10:00:00Z"
+}
+```
+
+Fields explained:
+
+-id: Unique identifier
+
+-description: Transaction description
+
+-amount: Numeric value of the transaction
+
+--category: Transaction category or tag
+
+-date: Transaction date (YYYY-MM-DD)
+
+-createdAt / updatedAt: Timestamps for tracking changes
+
