@@ -71,7 +71,7 @@ git clone https://github.com/Ghislaine-i/student-finance-tracker.git
 
 3. Use the dashboard to add/edit/delete transactions.
 
-4. Import seed.json to pre-populate data.
+4. Import seed.json to pre-populate data (Optional).
    
 📂 Project Structure
 
@@ -88,4 +88,5 @@ project-root/
 📧 Contact
 
 GitHub: Ghislaine-i
+
 Email: g.ineza@alustudent.com
