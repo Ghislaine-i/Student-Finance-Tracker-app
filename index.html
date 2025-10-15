@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Student Finance Tracker</title>
-
-    <!-- Base styles -->
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/responsive.css">
-
-    <!-- Accessibility and SEO -->
     <meta name="description" content="Track student expenses easily with categories, budgets, and reports.">
 </head>
-
 <body>
 <!-- Skip link for accessibility -->
 <a href="#main-content" class="skip-link">Skip to content</a>
@@ -24,13 +19,13 @@
         <ul>
             <li><a href="#about">About</a></li>
             <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#add-record">Add Transaction</a></li>
             <li><a href="#records">Records</a></li>
             <li><a href="#settings">Settings</a></li>
         </ul>
     </nav>
 </header>
 
-<!-- Main content -->
 <main id="main-content" role="main">
     <!-- About Section -->
     <section id="about" aria-labelledby="about-heading">
@@ -39,9 +34,49 @@
             The Student Finance Tracker helps you manage and analyze your daily spending.
             Add transactions, view statistics, and stay on top of your budget — all from one place.
         </p>
-        <p>Contact: <a href="mailto:youremail@example.com">youremail@example.com</a> |
-            <a href="https://github.com/yourusername" target="_blank">GitHub</a>
-        </p>
+        <div class="contact-info">
+            <p><strong>Contact:</strong> youremail@example.com | <a href="https://github.com/yourusername" target="_blank">GitHub</a></p>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" aria-labelledby="dashboard-heading">
+        <h2 id="dashboard-heading">Dashboard</h2>
+        <div id="stats">
+            <div class="stat-card">
+                <h3>Total Records</h3>
+                <p id="total-records">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Spent</h3>
+                <p id="total-amount">0 RWF</p>
+            </div>
+            <div class="stat-card">
+                <h3>Top Category</h3>
+                <p id="top-category">N/A</p>
+            </div>
+            <div class="stat-card">
+                <h3>Budget Status</h3>
+                <p id="cap-status" aria-live="polite">No cap set</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="weekly-chart" aria-label="Weekly Spending Trend">
+                <!-- Fallback content for screen readers -->
+                A bar chart showing spending trends for the past 7 days.
+            </canvas>
+            <div class="chart-legend">
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color legend-normal"></div>
+                    <span>Normal Days</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color legend-today"></div>
+                    <span>Today</span>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Add Record Form -->
@@ -56,14 +91,14 @@
 
             <div class="form-group">
                 <label for="amount">Amount (RWF)</label>
-                <input type="number" id="amount" name="amount" placeholder="e.g., 2500" required step="0.01" />
+                <input type="number" id="amount" name="amount" placeholder="e.g., 2500" required step="0.01" min="0.01" />
                 <span class="error-msg" id="amount-error" aria-live="polite"></span>
             </div>
 
             <div class="form-group">
                 <label for="category">Category</label>
                 <select id="category" name="category" required>
-                    <option value="">Select</option>
+                    <option value="">Select Category</option>
                     <option>Food</option>
                     <option>Books</option>
                     <option>Transport</option>
@@ -89,8 +124,14 @@
         <h2 id="records-heading">Transaction Records</h2>
 
         <div class="search-bar">
-            <label for="search">Search (Regex Supported):</label>
-            <input type="text" id="search" placeholder="/food|rent|transport/i" />
+            <label for="search">Search:</label>
+            <input type="text" id="search" placeholder="Search descriptions or categories..." />
+            <div class="search-options">
+                <label>
+                    <input type="checkbox" id="regex-toggle"> Use regex
+                </label>
+                <small class="search-hint">Try: /food|coffee/i for advanced search</small>
+            </div>
         </div>
 
         <table id="records-table" aria-describedby="records-heading">
@@ -109,23 +150,6 @@
         </table>
     </section>
 
-
-    <!-- Dashboard Section -->
-    <section id="dashboard" aria-labelledby="dashboard-heading">
-        <h2 id="dashboard-heading">Dashboard</h2>
-        <div id="stats">
-            <p>Total Records: <span id="total-records">0</span></p>
-            <p>Total Spent: <span id="total-amount">0 RWF</span></p>
-            <p>Top Category: <span id="top-category">N/A</span></p>
-            <p>Cap Status: <span id="cap-status" aria-live="polite">Under Limit</span></p>
-        </div>
-
-        <div class="chart-container">
-            <canvas id="weekly-chart" aria-label="Weekly Spending Trend"></canvas>
-        </div>
-    </section>
-
-    <!-- Settings Section -->
     <!-- Settings Section -->
     <section id="settings" aria-labelledby="settings-heading">
         <h2 id="settings-heading">Budget & Currency Settings</h2>
@@ -141,8 +165,7 @@
         <form id="settings-form">
             <div class="form-group">
                 <label for="currency-rate">Exchange Rate (1 USD = ? RWF)</label>
-                <input type="number" id="currency-rate" step="0.01" min="1"
-                       placeholder="e.g., 1200" />
+                <input type="number" id="currency-rate" step="0.01" min="1" placeholder="e.g., 1200" />
                 <small class="field-hint">Current rate: ~1200 RWF per USD</small>
             </div>
 
@@ -161,6 +184,7 @@
 <footer role="contentinfo">
     <p>&copy; 2025 Student Finance Tracker. Built for learning and accessibility.</p>
 </footer>
+
 <!-- JS Modules -->
 <script type="module" src="scripts/ui.js"></script>
 </body>

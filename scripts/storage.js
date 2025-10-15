@@ -12,7 +12,13 @@ export function generateId() {
 export function loadTransactions() {
     try {
         const data = localStorage.getItem(STORAGE_KEY);
-        return data ? JSON.parse(data) : [];
+        if (data) {
+            const transactions = JSON.parse(data);
+            console.log(`Loaded ${transactions.length} transactions from localStorage`);
+            return transactions;
+        }
+        console.log('No transactions found in localStorage, returning empty array');
+        return [];
     } catch (error) {
         console.error('Error loading transactions:', error);
         return [];
@@ -23,9 +29,11 @@ export function loadTransactions() {
 export function saveTransactions(transactions) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+        console.log(`Saved ${transactions.length} transactions to localStorage`);
         return true;
     } catch (error) {
         console.error('Error saving transactions:', error);
+        showMessage('Error saving transactions to storage', 'error');
         return false;
     }
 }
@@ -34,14 +42,20 @@ export function saveTransactions(transactions) {
 export function loadSettings() {
     try {
         const settings = localStorage.getItem(SETTINGS_KEY);
-        return settings ? JSON.parse(settings) : {
-            currencyRate: 1200, // 1 USD = 1200 RWF
-            budgetCap: 100000, // Monthly cap
+        if (settings) {
+            const parsedSettings = JSON.parse(settings);
+            console.log('Loaded settings from localStorage:', parsedSettings);
+            return parsedSettings;
+        }
+        console.log('No settings found, returning defaults');
+        return {
+            currencyRate: 1200,
+            budgetCap: 0,
             baseCurrency: 'RWF'
         };
     } catch (error) {
         console.error('Error loading settings:', error);
-        return { currencyRate: 1200, budgetCap: 100000, baseCurrency: 'RWF' };
+        return { currencyRate: 1200, budgetCap: 0, baseCurrency: 'RWF' };
     }
 }
 
@@ -49,6 +63,7 @@ export function loadSettings() {
 export function saveSettings(settings) {
     try {
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        console.log('Settings saved to localStorage:', settings);
         return true;
     } catch (error) {
         console.error('Error saving settings:', error);
@@ -86,9 +101,16 @@ export function importData(jsonString) {
             saveSettings(data.settings);
         }
 
+        console.log(`Imported ${data.transactions.length} transactions successfully`);
         return true;
     } catch (error) {
         console.error('Error importing data:', error);
         throw error;
     }
+}
+
+// Helper function to show messages (for storage errors)
+function showMessage(message, type) {
+    // This would typically be imported from ui.js, but here's a basic version
+    console[type === 'error' ? 'error' : 'log'](`Storage: ${message}`);
 }
