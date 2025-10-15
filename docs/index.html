@@ -24,5 +24,49 @@
         </ul>
     </nav>
 </header>
+    <main id="main-content"  role="main">
+        <!-- About Section -->
+        <section id="about" aria-labelledby="about-heading">
+            <h2 id="about-heading">About</h2>
+            <p>
+                The Student Finance Tracker helps you manage and analyze your daily spending.
+                Add transactions, view statistics, and stay on top of your budget — all from one place.
+            </p>
+
+        </section>
+
+        <!-- Add Record Form -->
+        <section id="add-record" aria-labelledby="add-heading">
+            <h2 id="add-heading">Add Transaction</h2>
+            <form id="transaction-form" novalidate>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" placeholder="e.g., Lunch at cafeteria" required />
+                    <span class="error-msg" id="desc-error" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount (RWF)</label>
+                    <input type="number" id="amount" name="amount" placeholder="e.g., 2500" required step="0.01" />
+                    <span class="error-msg" id="amount-error" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select</option>
+                        <option>Food</option>
+                        <option>Books</option>
+                        <option>Transport</option>
+                        <option>Entertainment</option>
+                        <option>Fees</option>
+                        <option>Other</option>
+                    </select>
+                    <span class="error-msg" id="category-error" aria-live="polite"></span>
+                </div>
+
+
+
+    </main>
 </body>
 </html>
