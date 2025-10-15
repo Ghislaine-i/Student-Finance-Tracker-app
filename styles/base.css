@@ -5,6 +5,7 @@
     margin: 0;
     padding: 0;
 }
+
 html {
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
@@ -31,6 +32,358 @@ body {
     text-decoration: none;
     transition: top 0.3s ease-in-out;
 }
+
 .skip-link:focus {
     top: 0;
+}
+
+/* ===========================
+   LAYOUT & CONTAINERS
+=========================== */
+.site-header {
+    background: #2c3e50;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.site-header h1 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.main-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.main-nav a:hover,
+.main-nav a:focus {
+    background-color: #34495e;
+    outline: 2px solid #3498db;
+}
+
+/* ===========================
+   MAIN CONTENT
+=========================== */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ===========================
+   FORMS
+=========================== */
+/* ===========================
+   FORMS - COMPACT VERSION
+=========================== */
+.form-group {
+    margin-bottom: 0.75rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1.5px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+button {
+    background: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+}
+
+button:hover, button:focus {
+    background: #2980b9;
+    outline: 2px solid #3498db;
+    outline-offset: 1px;
+}
+
+/* Make form more compact */
+#transaction-form {
+    max-width: 500px;
+}
+
+/* Reduce section padding */
+#add-record {
+    padding: 1rem;
+}
+/* ===========================
+   ERROR STATES
+=========================== */
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+input:invalid, select:invalid {
+    border-color: #e74c3c;
+}
+
+/* ===========================
+   TABLE
+=========================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+/* ===========================
+   SEARCH ENHANCEMENTS
+=========================== */
+.search-bar {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.search-feedback {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.search-feedback.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.search-feedback.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.match-count {
+    font-weight: bold;
+    margin-left: 0.5rem;
+}
+
+.search-stats {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+/* Search input states */
+#search:valid {
+    border-color: #28a745;
+}
+
+#search:invalid {
+    border-color: #dc3545;
+}
+
+/* Highlight styles */
+mark {
+    background-color: #ffeb3b;
+    padding: 0.1em 0.2em;
+    border-radius: 2px;
+}
+
+/* Search examples */
+.search-examples {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.search-examples code {
+    background: #f8f9fa;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: monospace;
+    cursor: pointer;
+}
+
+.search-examples code:hover {
+    background: #e9ecef;
+}
+
+/* ===========================
+   DASHBOARD STATS
+=========================== */
+#stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 0;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Reduce space between sections */
+section {
+    margin: 1rem 0;
+    padding: 1rem;
+}
+
+/* Make chart container only as tall as needed */
+.chart-container {
+    min-height: 150px;
+    height: 150px;
+    padding: 0.5rem;
+}
+
+/* Compact stats */
+.stat-card {
+    padding: 0.75rem;
+}
+
+.stat-card h3 {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card p {
+    font-size: 1.1rem;
+}
+
+/* ===========================
+   CHART
+=========================== */
+.chart-container {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+footer {
+    text-align: center;
+    padding: 1rem;
+    background: #2c3e50;
+    color: white;
+    margin-top: 2rem;
+}
+/* Settings improvements */
+.settings-explanation {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #3498db;
+}
+
+.settings-explanation ul {
+    margin-left: 1.5rem;
+}
+
+.settings-explanation li {
+    margin-bottom: 0.5rem;
+}
+
+.field-hint {
+    color: #666;
+    font-size: 0.8rem;
+    font-style: italic;
+    display: block;
+    margin-top: 0.25rem;
+}
+/* ===========================
+   ACCESSIBILITY
+=========================== */
+:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+[aria-live="polite"], [aria-live="assertive"] {
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.contact-info {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.contact-info a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
 }
