@@ -1,5 +1,3 @@
-// scripts/search.js
-
 // Safe regex compiler with error handling
 export function compileRegex(input, flags = 'i') {
     if (!input) return null;
@@ -75,6 +73,4 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-}
-}
 }
