@@ -16,13 +16,13 @@ import {
 // Global state
 let transactions = [];
 let settings = {};
-let currentSort = { field: 'date', direction: 'desc' };
 let currentSearch = '';
 let filteredTransactions = [];
+let editingId = null;
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('App initializing...');
+    console.log('Student Finance Tracker Initializing...');
     initializeApp();
 });
 
@@ -30,7 +30,15 @@ function initializeApp() {
     // Load data
     transactions = loadTransactions();
     settings = loadSettings();
+
+    // Set default exchange rate if not set
+    if (!settings.currencyRate) {
+        settings.currencyRate = 1200;
+        saveSettings(settings);
+    }
+
     console.log('Loaded transactions:', transactions.length);
+    console.log('Settings:', settings);
 
     // Initialize filtered transactions
     filteredTransactions = [...transactions];
@@ -40,15 +48,11 @@ function initializeApp() {
     updateDashboard();
     setupEventListeners();
     loadSettingsForm();
-
-    console.log('App initialized successfully');
 }
 
 function setupEventListeners() {
     // Form submission
     const form = document.getElementById('transaction-form');
-    console.log('Form element found:', !!form);
-
     if (form) {
         form.addEventListener('submit', handleFormSubmit);
     }
@@ -64,11 +68,21 @@ function setupEventListeners() {
     if (settingsForm) {
         settingsForm.addEventListener('click', handleSaveSettings);
     }
+
+    // Regex toggle
+    const regexToggle = document.getElementById('regex-toggle');
+    if (regexToggle) {
+        regexToggle.addEventListener('change', handleSearch);
+    }
+
+    // Handle window resize for chart
+    window.addEventListener('resize', function() {
+        renderWeeklyChart();
+    });
 }
 
 function handleFormSubmit(event) {
     event.preventDefault();
-    console.log('Form submitted!');
 
     // Get form values
     const description = document.getElementById('description').value.trim();
@@ -76,33 +90,49 @@ function handleFormSubmit(event) {
     const category = document.getElementById('category').value;
     const date = document.getElementById('date').value;
 
-    console.log('Form values:', { description, amount, category, date });
+    console.log('Form submitted:', { description, amount, category, date });
 
     // Basic validation
-    if (!description) {
-        showError('description', 'Description is required');
+    if (!validateForm(description, amount, category, date)) {
         return;
     }
 
-    if (!amount || amount <= 0) {
-        showError('amount', 'Amount must be greater than 0');
-        return;
+    clearErrors();
+
+    if (editingId) {
+        updateExistingTransaction(editingId, description, amount, category, date);
+    } else {
+        addNewTransaction(description, amount, category, date);
+    }
+}
+
+function validateForm(description, amount, category, date) {
+    let isValid = true;
+
+    if (!description) {
+        showError('description', 'Description is required');
+        isValid = false;
+    }
+
+    if (!amount || amount <= 0 || isNaN(amount)) {
+        showError('amount', 'Valid amount greater than 0 is required');
+        isValid = false;
     }
 
     if (!category) {
         showError('category', 'Category is required');
-        return;
+        isValid = false;
     }
 
     if (!date) {
         showError('date', 'Date is required');
-        return;
+        isValid = false;
     }
 
-    // Clear any previous errors
-    clearErrors();
+    return isValid;
+}
 
-    // Create transaction object
+function addNewTransaction(description, amount, category, date) {
     const transaction = {
         description: description,
         amount: amount,
@@ -115,13 +145,38 @@ function handleFormSubmit(event) {
 
     console.log('Adding transaction:', transaction);
 
-    // Add to transactions array
     transactions.push(transaction);
+    saveTransactions(transactions);
+    updateUIAfterChange();
+    resetForm();
+    showMessage('Transaction added successfully!', 'success');
+}
 
-    // Save to localStorage
-    const saveResult = saveTransactions(transactions);
-    console.log('Save result:', saveResult);
+function updateExistingTransaction(id, description, amount, category, date) {
+    const transactionIndex = transactions.findIndex(txn => txn.id === id);
 
+    if (transactionIndex !== -1) {
+        transactions[transactionIndex] = {
+            ...transactions[transactionIndex],
+            description: description,
+            amount: amount,
+            category: category,
+            date: date,
+            updatedAt: new Date().toISOString()
+        };
+
+        console.log('Updating transaction:', transactions[transactionIndex]);
+
+        saveTransactions(transactions);
+        updateUIAfterChange();
+        resetForm();
+        showMessage('Transaction updated successfully!', 'success');
+    } else {
+        showMessage('Transaction not found!', 'error');
+    }
+}
+
+function updateUIAfterChange() {
     // Update filtered transactions for search
     if (currentSearch) {
         filteredTransactions = filterTransactions(transactions, currentSearch);
@@ -133,13 +188,23 @@ function handleFormSubmit(event) {
     renderTransactions();
     updateDashboard();
 
-    // Reset form
-    event.target.reset();
+    // Force chart update
+    setTimeout(() => {
+        renderWeeklyChart();
+    }, 100);
+}
 
-    // Show success message
-    showMessage('Transaction added successfully!', 'success');
+function resetForm() {
+    const form = document.getElementById('transaction-form');
+    const submitBtn = document.getElementById('add-btn');
 
-    console.log('Transaction added successfully. Total transactions:', transactions.length);
+    form.reset();
+    submitBtn.textContent = 'Add Transaction';
+    submitBtn.style.background = '#27ae60';
+    editingId = null;
+
+    // Focus on description field for better UX
+    document.getElementById('description').focus();
 }
 
 function clearErrors() {
@@ -172,24 +237,28 @@ function showMessage(message, type = 'info') {
         position: fixed;
         top: 20px;
         right: 20px;
-        padding: 1rem;
-        background: ${type === 'success' ? '#d4edda' : '#f8d7da'};
-        color: ${type === 'success' ? '#155724' : '#721c24'};
-        border: 1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'};
-        border-radius: 4px;
-        z-index: 1000;
-        font-weight: bold;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? '#d4edda' :
+        type === 'error' ? '#f8d7da' : '#d1ecf1'};
+        color: ${type === 'success' ? '#155724' :
+        type === 'error' ? '#721c24' : '#0c5460'};
+        border: 1px solid ${type === 'success' ? '#c3e6cb' :
+        type === 'error' ? '#f5c6cb' : '#bee5eb'};
+        border-radius: 8px;
+        z-index: 10000;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        max-width: 400px;
     `;
 
     document.body.appendChild(messageEl);
 
-    // Remove after 3 seconds
+    // Remove after 4 seconds
     setTimeout(() => {
         if (messageEl.parentNode) {
             messageEl.parentNode.removeChild(messageEl);
         }
-    }, 3000);
+    }, 4000);
 }
 
 function renderTransactions() {
@@ -202,19 +271,31 @@ function renderTransactions() {
     tbody.innerHTML = '';
 
     const transactionsToRender = currentSearch ? filteredTransactions : transactions;
+    const exchangeRate = settings.currencyRate || 1200;
+
     console.log('Rendering transactions:', transactionsToRender.length);
 
     if (transactionsToRender.length === 0) {
         const noResultsMessage = currentSearch ?
             'No transactions match your search' :
             'No transactions yet. Add your first transaction above!';
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #666;">${noResultsMessage}</td></tr>`;
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 3rem; color: #666; font-style: italic;">
+                    ${noResultsMessage}
+                </td>
+            </tr>`;
         return;
     }
 
     const searchRegex = compileRegex(currentSearch);
 
-    transactionsToRender.forEach(transaction => {
+    // Sort transactions by date (newest first)
+    const sortedTransactions = [...transactionsToRender].sort((a, b) =>
+        new Date(b.date) - new Date(a.date)
+    );
+
+    sortedTransactions.forEach(transaction => {
         const row = document.createElement('tr');
 
         // Highlight matches if searching
@@ -226,14 +307,26 @@ function renderTransactions() {
             highlightMatches(transaction.category, searchRegex) :
             escapeHtml(transaction.category);
 
+        // Calculate USD amount using exchange rate
+        const amountUSD = (transaction.amount / exchangeRate).toFixed(2);
+
         row.innerHTML = `
             <td>${description}</td>
-            <td>${formatAmount(transaction.amount)} RWF</td>
+            <td>
+                <div style="font-weight: bold;">${formatAmount(transaction.amount)} RWF</div>
+                <div style="font-size: 0.8em; color: #666; margin-top: 2px;">
+                    ≈ $${amountUSD} USD
+                </div>
+            </td>
             <td><span class="category-tag">${category}</span></td>
             <td>${formatDate(transaction.date)}</td>
             <td class="actions">
-                <button onclick="editTransaction('${transaction.id}')" class="btn-edit" title="Edit transaction">Edit</button>
-                <button onclick="deleteTransaction('${transaction.id}')" class="btn-delete" title="Delete transaction">Delete</button>
+                <button onclick="editTransaction('${transaction.id}')" class="btn-edit" title="Edit transaction">
+                    Edit
+                </button>
+                <button onclick="deleteTransaction('${transaction.id}')" class="btn-delete" title="Delete transaction">
+                    Delete
+                </button>
             </td>
         `;
         tbody.appendChild(row);
@@ -254,16 +347,33 @@ function updateDashboard() {
         return;
     }
 
-    totalRecordsEl.textContent = transactions.length;
+    // Calculate total amount
+    const totalAmountRWF = transactions.reduce((sum, txn) => {
+        return sum + parseFloat(txn.amount);
+    }, 0);
 
-    const totalAmount = transactions.reduce((sum, txn) => sum + txn.amount, 0);
-    totalAmountEl.textContent = `${formatAmount(totalAmount)} RWF`;
+    // Convert to USD using exchange rate
+    const exchangeRate = settings.currencyRate || 1200;
+    const totalAmountUSD = (totalAmountRWF / exchangeRate).toFixed(2);
+
+    console.log('Total amounts - RWF:', totalAmountRWF, 'USD:', totalAmountUSD, 'Rate:', exchangeRate);
+
+    totalRecordsEl.textContent = transactions.length;
+    totalAmountEl.innerHTML = `
+        <div style="font-weight: bold; font-size: 1.1em;">${formatAmount(totalAmountRWF)} RWF</div>
+        <div style="font-size: 0.9em; color: #666; margin-top: 4px;">
+            ≈ $${formatAmount(totalAmountUSD)} USD
+        </div>
+    `;
 
     // Find top category
     const categoryTotals = {};
     transactions.forEach(txn => {
-        categoryTotals[txn.category] = (categoryTotals[txn.category] || 0) + txn.amount;
+        const amount = parseFloat(txn.amount);
+        categoryTotals[txn.category] = (categoryTotals[txn.category] || 0) + amount;
     });
+
+    console.log('Category totals:', categoryTotals);
 
     const topCategory = Object.keys(categoryTotals).reduce((top, category) => {
         return !top || categoryTotals[category] > categoryTotals[top] ? category : top;
@@ -272,26 +382,29 @@ function updateDashboard() {
     topCategoryEl.textContent = topCategory || 'N/A';
 
     // Update cap status
-    updateCapStatus(totalAmount);
+    updateCapStatus(totalAmountRWF);
 
     // Update chart
     renderWeeklyChart();
 }
 
-function updateCapStatus(totalAmount) {
+function updateCapStatus(totalAmountRWF) {
     const capStatusEl = document.getElementById('cap-status');
     if (!capStatusEl) return;
 
     const budgetCap = settings.budgetCap || 0;
+    console.log('Budget cap:', budgetCap, 'Total amount:', totalAmountRWF);
 
     if (budgetCap > 0) {
-        const remaining = budgetCap - totalAmount;
+        const remaining = budgetCap - totalAmountRWF;
         if (remaining >= 0) {
             capStatusEl.textContent = `Under limit by ${formatAmount(remaining)} RWF`;
             capStatusEl.style.color = '#27ae60';
+            capStatusEl.style.fontWeight = '600';
         } else {
             capStatusEl.textContent = `Over limit by ${formatAmount(Math.abs(remaining))} RWF`;
             capStatusEl.style.color = '#e74c3c';
+            capStatusEl.style.fontWeight = '600';
         }
     } else {
         capStatusEl.textContent = 'No budget cap set';
@@ -309,108 +422,238 @@ function renderWeeklyChart() {
     const ctx = canvas.getContext('2d');
     const weeklyData = getLast7DaysSpending();
 
+    console.log('Weekly data for chart:', weeklyData);
+
     // Set canvas size
-    canvas.width = canvas.parentElement.offsetWidth;
-    canvas.height = 200;
+    const container = canvas.parentElement;
+    canvas.width = container.clientWidth;
+    canvas.height = 160;
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (weeklyData.total === 0) {
         // Show message if no data
-        ctx.fillStyle = '#666';
-        ctx.font = '14px Arial';
+        ctx.fillStyle = '#6c757d';
+        ctx.font = '12px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('No transactions in the past 7 days', canvas.width / 2, canvas.height / 2);
+        ctx.fillText('Add transactions with dates from the last 7 days to see the chart', canvas.width / 2, canvas.height / 2);
         return;
     }
 
     // Chart dimensions
-    const padding = 40;
-    const chartWidth = canvas.width - (padding * 2);
-    const chartHeight = canvas.height - (padding * 2);
-    const barWidth = (chartWidth / 7) - 5;
+    const padding = { top: 25, right: 15, bottom: 25, left: 40 };
+    const chartWidth = canvas.width - padding.left - padding.right;
+    const chartHeight = canvas.height - padding.top - padding.bottom;
+    const barSpacing = 6;
+    const barWidth = (chartWidth / 7) - barSpacing;
 
     // Find maximum amount for scaling
     const maxAmount = Math.max(...weeklyData.days.map(day => day.amount));
     const scaleFactor = maxAmount > 0 ? (chartHeight / maxAmount) : 1;
 
+    // Draw Y-axis grid lines and labels
+    ctx.strokeStyle = '#f0f0f0';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#6c757d';
+    ctx.font = '9px Arial';
+    ctx.textAlign = 'right';
+
+    // Draw grid lines
+    const gridLines = 3;
+    for (let i = 0; i <= gridLines; i++) {
+        const value = (maxAmount / gridLines) * i;
+        const y = padding.top + (chartHeight - (value * scaleFactor));
+
+        // Grid line
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(canvas.width - padding.right, y);
+        ctx.stroke();
+
+        // Label
+        if (value > 0) {
+            ctx.fillText(formatAmount(value), padding.left - 5, y + 3);
+        }
+    }
+
     // Draw bars
     weeklyData.days.forEach((day, index) => {
         const barHeight = day.amount * scaleFactor;
-        const x = padding + (index * (barWidth + 5));
-        const y = padding + (chartHeight - barHeight);
+        const x = padding.left + (index * (barWidth + barSpacing));
+        const y = padding.top + (chartHeight - barHeight);
 
-        // Draw bar with different color for current day
-        const isToday = index === 6;
+        // Check if this is today
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0];
+        const isToday = day.date === todayString;
+
+        // Bar color
         ctx.fillStyle = isToday ? '#e74c3c' : '#3498db';
         ctx.fillRect(x, y, barWidth, barHeight);
 
         // Draw day label
-        ctx.fillStyle = '#333';
-        ctx.font = '12px Arial';
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = '10px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(day.day, x + barWidth / 2, canvas.height - 10);
+        ctx.fillText(day.day, x + barWidth / 2, canvas.height - 8);
 
-        // Draw amount label
+        // Draw amount label (only if amount > 0)
         if (day.amount > 0) {
-            ctx.fillStyle = '#2c3e50';
-            ctx.font = 'bold 11px Arial';
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 9px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText(formatAmount(day.amount), x + barWidth / 2, y - 5);
+
+            // Position text inside bar if there's space, otherwise above
+            if (barHeight > 18) {
+                ctx.fillText(formatAmount(day.amount), x + barWidth / 2, y + 12);
+            } else if (barHeight > 0) {
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillText(formatAmount(day.amount), x + barWidth / 2, y - 5);
+            }
         }
     });
 
     // Draw chart title
     ctx.fillStyle = '#2c3e50';
-    ctx.font = 'bold 14px Arial';
+    ctx.font = 'bold 13px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Weekly Spending Trend', canvas.width / 2, 20);
+    ctx.fillText('Last 7 Days Spending', canvas.width / 2, 15);
 }
 
 function getLast7DaysSpending() {
     const days = [];
     let total = 0;
 
-    // Generate last 7 days
+    // Generate last 7 days including today
     for (let i = 6; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
         const dateString = date.toISOString().split('T')[0];
         const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+        // Calculate total for this day
         const dayAmount = transactions
             .filter(txn => txn.date === dateString)
-            .reduce((sum, txn) => sum + txn.amount, 0);
+            .reduce((sum, txn) => sum + parseFloat(txn.amount), 0);
 
         days.push({
             day: dayNames[date.getDay()],
             amount: dayAmount,
-            date: dateString
+            date: dateString,
+            fullDate: date.toLocaleDateString()
         });
 
         total += dayAmount;
     }
 
+    console.log('Weekly spending data:', days);
     return { days, total };
 }
 
 // Search functionality
 function handleSearch(event) {
-    const searchInput = event.target.value;
+    const searchInput = document.getElementById('search').value;
+    const useRegex = document.getElementById('regex-toggle')?.checked || false;
     currentSearch = searchInput;
 
-    console.log('Searching:', searchInput);
+    console.log('Searching:', searchInput, 'Regex:', useRegex);
 
     // Filter transactions
     if (searchInput.trim()) {
-        filteredTransactions = filterTransactions(transactions, searchInput);
+        if (useRegex) {
+            filteredTransactions = filterTransactions(transactions, searchInput);
+            const regex = compileRegex(searchInput);
+            showSearchFeedback(regex, filteredTransactions.length, true);
+        } else {
+            // Simple text search
+            const lowerSearch = searchInput.toLowerCase();
+            filteredTransactions = transactions.filter(transaction => {
+                return transaction.description.toLowerCase().includes(lowerSearch) ||
+                    transaction.category.toLowerCase().includes(lowerSearch) ||
+                    transaction.amount.toString().includes(lowerSearch) ||
+                    transaction.date.includes(lowerSearch);
+            });
+            showSearchFeedback(null, filteredTransactions.length, false);
+        }
     } else {
         filteredTransactions = [...transactions];
+        clearSearchFeedback();
     }
 
     // Re-render transactions
     renderTransactions();
+    updateSearchStats();
+}
+
+function showSearchFeedback(regex, matchCount, isRegex) {
+    const searchInput = document.getElementById('search');
+    const feedbackEl = document.getElementById('search-feedback') || createSearchFeedbackElement();
+
+    if (isRegex && !regex) {
+        searchInput.style.borderColor = '#e74c3c';
+        feedbackEl.textContent = 'Invalid regex pattern';
+        feedbackEl.className = 'search-feedback error';
+    } else {
+        searchInput.style.borderColor = '#27ae60';
+        const searchType = isRegex ? 'Regex search' : 'Text search';
+        feedbackEl.innerHTML = `
+            ${searchType} ✓ 
+            <span class="match-count">${matchCount} transaction${matchCount !== 1 ? 's' : ''} matched</span>
+        `;
+        feedbackEl.className = 'search-feedback success';
+    }
+}
+
+function clearSearchFeedback() {
+    const searchInput = document.getElementById('search');
+    const feedbackEl = document.getElementById('search-feedback');
+
+    searchInput.style.borderColor = '';
+    if (feedbackEl) {
+        feedbackEl.textContent = '';
+        feedbackEl.className = 'search-feedback';
+    }
+}
+
+function createSearchFeedbackElement() {
+    const feedbackEl = document.createElement('div');
+    feedbackEl.id = 'search-feedback';
+    feedbackEl.className = 'search-feedback';
+    feedbackEl.setAttribute('aria-live', 'polite');
+
+    const searchContainer = document.querySelector('.search-bar');
+    if (searchContainer) {
+        searchContainer.appendChild(feedbackEl);
+    }
+
+    return feedbackEl;
+}
+
+function updateSearchStats() {
+    const stats = document.getElementById('search-stats') || createSearchStatsElement();
+
+    if (currentSearch) {
+        const total = transactions.length;
+        const matched = filteredTransactions.length;
+        stats.textContent = `Showing ${matched} of ${total} transactions`;
+        stats.style.display = 'block';
+    } else {
+        stats.style.display = 'none';
+    }
+}
+
+function createSearchStatsElement() {
+    const statsEl = document.createElement('div');
+    statsEl.id = 'search-stats';
+    statsEl.className = 'search-stats';
+
+    const searchBar = document.querySelector('.search-bar');
+    if (searchBar && searchBar.parentNode) {
+        searchBar.parentNode.insertBefore(statsEl, searchBar.nextSibling);
+    }
+
+    return statsEl;
 }
 
 // Settings functionality
@@ -418,12 +661,25 @@ function handleSaveSettings() {
     const currencyRate = parseFloat(document.getElementById('currency-rate').value) || 1200;
     const budgetCap = parseFloat(document.getElementById('budget-cap').value) || 0;
 
+    // Validate settings
+    if (currencyRate <= 0) {
+        showMessage('Exchange rate must be greater than 0', 'error');
+        return;
+    }
+
+    if (budgetCap < 0) {
+        showMessage('Budget cap cannot be negative', 'error');
+        return;
+    }
+
     settings.currencyRate = currencyRate;
     settings.budgetCap = budgetCap;
 
     if (saveSettings(settings)) {
         showMessage('Settings saved successfully!', 'success');
+        // Refresh everything to show new currency conversions
         updateDashboard();
+        renderTransactions();
     } else {
         showMessage('Error saving settings', 'error');
     }
@@ -436,6 +692,8 @@ function loadSettingsForm() {
     if (currencyRateEl && budgetCapEl) {
         currencyRateEl.value = settings.currencyRate || 1200;
         budgetCapEl.value = settings.budgetCap || '';
+
+        console.log('Loaded settings form - Rate:', currencyRateEl.value, 'Cap:', budgetCapEl.value);
     }
 }
 
@@ -445,7 +703,11 @@ function formatAmount(amount) {
 }
 
 function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString();
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
 }
 
 function escapeHtml(text) {
@@ -456,22 +718,72 @@ function escapeHtml(text) {
 
 // Global functions for buttons
 window.editTransaction = function(id) {
-    console.log('Edit transaction:', id);
-    showMessage('Edit functionality coming soon!', 'info');
+    console.log('Editing transaction:', id);
+
+    const transaction = transactions.find(txn => txn.id === id);
+    if (!transaction) {
+        showMessage('Transaction not found!', 'error');
+        return;
+    }
+
+    // Populate form with transaction data
+    document.getElementById('description').value = transaction.description;
+    document.getElementById('amount').value = transaction.amount;
+    document.getElementById('category').value = transaction.category;
+    document.getElementById('date').value = transaction.date;
+
+    // Change button to "Update"
+    const submitBtn = document.getElementById('add-btn');
+    submitBtn.textContent = 'Update Transaction';
+    submitBtn.style.background = '#f39c12';
+
+    // Store the ID being edited
+    editingId = id;
+
+    // Scroll to form
+    document.getElementById('add-record').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+
+    // Focus on description field
+    document.getElementById('description').focus();
+
+    showMessage('Transaction loaded for editing. Make changes and click "Update Transaction"', 'info');
 };
 
 window.deleteTransaction = function(id) {
-    if (confirm('Are you sure you want to delete this transaction?')) {
+    const transaction = transactions.find(txn => txn.id === id);
+    if (!transaction) {
+        showMessage('Transaction not found!', 'error');
+        return;
+    }
+
+    if (confirm(`Are you sure you want to delete "${transaction.description}" - ${formatAmount(transaction.amount)} RWF?`)) {
         transactions = transactions.filter(txn => txn.id !== id);
         filteredTransactions = filteredTransactions.filter(txn => txn.id !== id);
         saveTransactions(transactions);
+
         renderTransactions();
         updateDashboard();
+
         showMessage('Transaction deleted successfully!', 'success');
+        console.log('Deleted transaction:', id);
     }
 };
 
-// Make app responsive to window resize
-window.addEventListener('resize', function() {
-    renderWeeklyChart();
-});
+// Demo function to show exchange rate in action
+window.demoExchangeRate = function() {
+    const exchangeRate = settings.currencyRate || 1200;
+    const sampleAmounts = [5000, 10000, 25000, 50000];
+
+    let demoMessage = `Current Exchange Rate: 1 USD = ${exchangeRate} RWF\n\n`;
+    demoMessage += 'Example conversions:\n';
+
+    sampleAmounts.forEach(amount => {
+        const usdAmount = (amount / exchangeRate).toFixed(2);
+        demoMessage += `${formatAmount(amount)} RWF = $${usdAmount} USD\n`;
+    });
+
+    showMessage(demoMessage, 'info');
+};
