@@ -1,0 +1,101 @@
+/* ===========================
+   MOBILE FIRST (Default)
+=========================== */
+
+/* Hide table on mobile, show cards */
+#records-table {
+    display: none;
+}
+
+.record-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+}
+
+/* ===========================
+   TABLET (768px+)
+=========================== */
+@media (min-width: 768px) {
+    .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+    }
+
+    .site-header h1 {
+        margin-bottom: 0;
+        font-size: 1.75rem;
+    }
+
+    #stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .form-group label {
+        margin-bottom: 0;
+        text-align: right;
+    }
+}
+
+/* ===========================
+   DESKTOP (1024px+)
+=========================== */
+@media (min-width: 1024px) {
+    main {
+        padding: 2rem;
+    }
+
+    /* Show table, hide cards */
+    #records-table {
+        display: table;
+    }
+
+    .record-card {
+        display: none;
+    }
+
+    /* Multi-column layout for sections */
+    .section-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    #add-record {
+        grid-column: 1;
+    }
+
+    #dashboard {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    #records {
+        grid-column: 1 / -1;
+    }
+}
+
+/* ===========================
+   LARGE DESKTOP (1200px+)
+=========================== */
+@media (min-width: 1200px) {
+    .site-header h1 {
+        font-size: 2rem;
+    }
+
+    .main-nav ul {
+        gap: 2rem;
+    }
+}
