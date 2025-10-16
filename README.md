@@ -17,22 +17,6 @@ Student Finance Tracker helps students monitor daily spending with powerful feat
 - JavaScript enabled
 - Local storage enabled
 
-### Installation & Setup
-1. **Access Live Version**: Visit the [live demo](https://ghislaine-i.github.io/Student-Finance-Tracker-app/)
-2. **Local Development** (optional):
-   ```bash
-   git clone https://github.com/ghislaine-i/Student-Finance-Tracker-app.git
-   cd Student-Finance-Tracker-app
-   # Open index.html in your browser
-   ```
-3. **Start Using**: Begin adding transactions immediately - no registration required!
-
-### First-Time Setup
-1. Open the application
-2. Add your first transaction using the form
-3. Set your budget in Settings (optional)
-4. Configure currency exchange rate (default: 1448 RWF = 1 USD)
-
 ## ✨ Features
 
 ### Core Functionality
@@ -306,6 +290,9 @@ To deploy to other platforms:
 1. Ensure all file paths are relative
 2. Remove ES6 module imports if necessary
 3. Test functionality in target environment
+ 
+**###DEMO VIDEO LINK**
+https://youtu.be/RDPfU5Ive3I?si=K29QicmI7M7tFdka
 
 ---
 
