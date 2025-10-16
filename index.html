@@ -60,23 +60,6 @@
                 <p id="cap-status" aria-live="polite">No cap set</p>
             </div>
         </div>
-
-        <div class="chart-container">
-            <canvas id="weekly-chart" aria-label="Weekly Spending Trend">
-                <!-- Fallback content for screen readers -->
-                A bar chart showing spending trends for the past 7 days.
-            </canvas>
-            <div class="chart-legend">
-                <div class="chart-legend-item">
-                    <div class="chart-legend-color legend-normal"></div>
-                    <span>Normal Days</span>
-                </div>
-                <div class="chart-legend-item">
-                    <div class="chart-legend-color legend-today"></div>
-                    <span>Today</span>
-                </div>
-            </div>
-        </div>
     </section>
 
     <!-- Add Record Form -->
@@ -209,6 +192,9 @@
 </footer>
 
 <!-- JS Modules -->
+<script type="module" src="scripts/storage.js"></script>
+<script type="module" src="scripts/validators.js"></script>
+<script type="module" src="scripts/search.js"></script>
 <script type="module" src="scripts/ui.js"></script>
 </body>
 </html>

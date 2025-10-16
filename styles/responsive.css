@@ -53,14 +53,6 @@
         font-size: 1.1rem;
     }
 
-    .chart-container {
-        padding: 0.75rem;
-    }
-
-    #weekly-chart {
-        height: 140px;
-    }
-
     input, select {
         padding: 0.6rem;
         font-size: 0.85rem;
@@ -108,9 +100,6 @@
         font-size: 1.35rem;
     }
 
-    #weekly-chart {
-        height: 180px;
-    }
 }
 
 /* ===========================
@@ -167,16 +156,6 @@
 
         .stat-card p {
             font-size: 1.5rem;
-        }
-
-        /* Chart */
-
-        #weekly-chart {
-            height: 200px;
-        }
-
-        .chart-legend {
-            gap: 1.5rem;
         }
 
         /* Forms - Horizontal Layout */
@@ -525,13 +504,6 @@
         border: 1px solid #000 !important;
     }
 
-    /* Chart container */
-    .chart-container {
-        border: 1px solid #ccc !important;
-        background: white !important;
-        page-break-inside: avoid;
-    }
-
     /* Footer */
     footer {
         background: #2e47b3 !important;
@@ -616,9 +588,5 @@
 
     .stat-card p {
         color: #e0e0e0;
-    }
-
-    .chart-container {
-        background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
     }
 }
