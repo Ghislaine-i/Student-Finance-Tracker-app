@@ -219,7 +219,7 @@
             display: table;
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            background: #ffffff;
         }
 
         .records-cards {
@@ -229,11 +229,11 @@
         th, td {
             padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #ffffff;
         }
 
         th {
-            background: #f8f9fa;
+            background: #ffffff;
             font-weight: bold
 
         }
@@ -259,7 +259,7 @@
 }
 
 .record-card {
-    background: white;
+    background: #ffffff;
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: 8px;
@@ -364,7 +364,7 @@
         display: table;
         width: 100%;
         border-collapse: collapse;
-        background: white;
+        background: #1b2249;
     }
 
     .records-cards {
@@ -374,11 +374,11 @@
     th, td {
         padding: 1rem;
         text-align: left;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #242f5e;
     }
 
     th {
-        background: #f8f9fa;
+        background: #141a4e;
         font-weight: bold;
     }
 }
@@ -490,7 +490,7 @@
 
     /* Reset backgrounds and colors */
     body {
-        background: white !important;
+        background: #30418a !important;
         color: black !important;
     }
 
@@ -499,7 +499,7 @@
         border: 1px solid #000 !important;
         margin: 0.5rem 0 !important;
         page-break-inside: avoid;
-        background: white !important;
+        background: #040e39 !important;
     }
 
     /* Force table display */
@@ -534,7 +534,7 @@
 
     /* Footer */
     footer {
-        background: #f0f0f0 !important;
+        background: #2e47b3 !important;
         color: #000 !important;
         margin-top: 1rem !important;
         page-break-before: always;

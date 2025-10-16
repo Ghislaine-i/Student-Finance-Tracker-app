@@ -15,7 +15,7 @@ html {
 
 body {
     color: #222;
-    background: linear-gradient(135deg, #293c8e 0%, #4a3636 100%);
+    background: linear-gradient(135deg, #293c8e 0%, #ffffff 100%);
     min-height: 100vh;
 }
 
@@ -26,7 +26,7 @@ body {
     position: absolute;
     top: -40px;
     left: 0;
-    background: #000;
+    background: #4c5eaa;
     color: #fff;
     padding: 8px 12px;
     z-index: 1000;
@@ -104,28 +104,28 @@ section {
 
 /* Individual section backgrounds */
 #about {
-    background: linear-gradient(135deg, #374c4c 0%, #031a29 100%);
+    background: linear-gradient(135deg, #2d3659 0%, #031a29 100%);
     border-left: 4px solid #2196f3;
 }
 
 #dashboard {
-    background: linear-gradient(135deg, #d9def4 0%, #9b95d8 100%);
+    background: linear-gradient(135deg, #1a234a 0%, #4c5eaa 100%);
     border-left: 4px solid #4c7eaf;
 }
 
 #add-record {
-    background: linear-gradient(135deg, #c8cbd6 0%, #6a6795 100%);
+    background: linear-gradient(135deg, #16265e 0%, #414191 100%);
     border-left: 4px solid #242f5e;
 }
 
 #records {
-    background: linear-gradient(135deg, #bfc5e4 0%, #7986bd 100%);
-    border-left: 4px solid #9c27b0;
+    background: linear-gradient(135deg, #313a70 0%, #131f53 100%);
+    border-left: 4px solid #2e47b3;
 }
 
 #settings {
-    background: linear-gradient(135deg, #b2b7ca 0%, #889bec 100%);
-    border-left: 4px solid #009688;
+    background: linear-gradient(135deg, #1e2c61 0%, #263988 100%);
+    border-left: 4px solid #181c1c;
 }
 
 /* ===========================
@@ -134,7 +134,7 @@ section {
 #add-record h2 {
     font-size: 1.2rem;
     margin-bottom: 1rem;
-    color: #1b1a1a;
+    color: #ffffff;
 }
 
 .form-group {
@@ -146,7 +146,7 @@ label {
     margin-bottom: 0.5rem;
     font-weight: 600;
     font-size: 0.9rem;
-    color: #322c2c;
+    color: #ffffff;
 }
 
 input, select {
@@ -185,7 +185,7 @@ input:focus, select:focus {
 #add-btn:hover {
     background: linear-gradient(135deg, #171918 0%, #4c5eaa 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgb(46, 200, 171);
+    box-shadow: 0 6px 20px rgb(255, 255, 255);
 }
 
 /* ===========================
@@ -337,14 +337,14 @@ tr:hover {
 }
 
 .search-hint {
-    color: #666;
+    color: #ffffff;
     font-size: 0.8rem;
     font-style: italic;
 }
 
 /* Highlight styles */
 mark {
-    background: linear-gradient(135deg, #2e47b3 0%, #fbc02d 100%);
+    background: linear-gradient(135deg, #2e47b3 0%, #3c5d7c 100%);
     padding: 0.1em 0.3em;
     border-radius: 4px;
     font-weight: 600;
@@ -356,7 +356,7 @@ mark {
 #dashboard h2 {
     font-size: 1.2rem;
     margin-bottom: 1rem;
-    color: #333;
+    color: #ffffff;
 }
 
 #stats {
@@ -385,7 +385,7 @@ mark {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(135deg, #3498db, #2ecc71);
+    background: linear-gradient(135deg, #3498db, #080b09);
 }
 
 .stat-card:hover {
@@ -395,7 +395,7 @@ mark {
 
 .stat-card h3 {
     font-size: 0.75rem;
-    color: #6c757d;
+    color: #d1d5da;
     margin-bottom: 0.5rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -405,7 +405,7 @@ mark {
 .stat-card p {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #2c3e50;
+    color: #ffffff;
     margin: 0;
 }
 
@@ -423,8 +423,8 @@ mark {
     padding: 1.5rem;
     border-radius: 12px;
     margin-top: 1rem;
-    border: 1px solid rgba(255,255,255,0.5);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid rgb(255, 255, 255);
+    box-shadow: 0 4px 15px rgb(76, 94, 170);
 }
 
 #weekly-chart {
@@ -455,7 +455,7 @@ mark {
 }
 
 .legend-normal {
-    background: linear-gradient(135deg, #2b3c3c, #2980b9);
+    background: linear-gradient(135deg, #e4b135, #b6934e);
 }
 
 .legend-today {
@@ -466,7 +466,7 @@ mark {
    SETTINGS IMPROVEMENTS
 =========================== */
 .settings-explanation {
-    background: linear-gradient(135deg, #1c334a 0%, #303233 100%);
+    background: linear-gradient(135deg, #072953 0%, #303233 100%);
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 1.5rem;
@@ -483,7 +483,7 @@ mark {
 }
 
 .field-hint {
-    color: #666;
+    color: #ffffff;
     font-size: 0.8rem;
     font-style: italic;
     display: block;
@@ -575,12 +575,12 @@ footer {
 
 /* Category tags in table */
 .category-tag {
-    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    background: linear-gradient(135deg, #131a39 0%, #101e2c 100%);
     padding: 0.4rem 0.8rem;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
-    color: #495057;
+    color: #ffffff;
     border: 1px solid #ced4da;
 }
 

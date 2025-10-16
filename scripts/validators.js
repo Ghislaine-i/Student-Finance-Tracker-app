@@ -1,24 +1,13 @@
 // scripts/validators.js
 
-// Regex patterns
-export const patterns = {
-    description: /^\S(?:.*\S)?$/, // No leading/trailing spaces
-    amount: /^(0|[1-9]\d*)(\.\d{1,2})?$/, // Positive numbers, optional 2 decimals
-    date: /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, // YYYY-MM-DD
-    category: /^[A-Za-z]+(?:[ -][A-Za-z]+)*$/, // Letters, spaces, hyphens
-    duplicateWords: /\b(\w+)\s+\1\b/i // Advanced: duplicate words detection
-};
-
 // Validation functions
 export function validateDescription(description) {
     const errors = [];
 
     if (!description || !description.trim()) {
         errors.push('Description is required');
-    } else if (!patterns.description.test(description)) {
-        errors.push('Description cannot have leading/trailing spaces');
-    } else if (patterns.duplicateWords.test(description)) {
-        errors.push('Description contains duplicate words');
+    } else if (description.trim().length < 2) {
+        errors.push('Description must be at least 2 characters long');
     }
 
     return errors;
@@ -27,12 +16,17 @@ export function validateDescription(description) {
 export function validateAmount(amount) {
     const errors = [];
 
-    if (!amount && amount !== 0) {
+    if (amount === null || amount === undefined || amount === '') {
         errors.push('Amount is required');
-    } else if (!patterns.amount.test(amount.toString())) {
-        errors.push('Amount must be a positive number with up to 2 decimal places');
-    } else if (parseFloat(amount) <= 0) {
-        errors.push('Amount must be greater than 0');
+    } else {
+        const numAmount = parseFloat(amount);
+        if (isNaN(numAmount)) {
+            errors.push('Amount must be a valid number');
+        } else if (numAmount <= 0) {
+            errors.push('Amount must be greater than 0');
+        } else if (numAmount > 10000000) { // Reasonable upper limit
+            errors.push('Amount is too large');
+        }
     }
 
     return errors;
@@ -43,8 +37,6 @@ export function validateCategory(category) {
 
     if (!category) {
         errors.push('Category is required');
-    } else if (!patterns.category.test(category)) {
-        errors.push('Category can only contain letters, spaces, and hyphens');
     }
 
     return errors;
@@ -55,14 +47,14 @@ export function validateDate(date) {
 
     if (!date) {
         errors.push('Date is required');
-    } else if (!patterns.date.test(date)) {
-        errors.push('Date must be in YYYY-MM-DD format');
     } else {
         const inputDate = new Date(date);
         const today = new Date();
         today.setHours(23, 59, 59, 999); // End of today
 
-        if (inputDate > today) {
+        if (isNaN(inputDate.getTime())) {
+            errors.push('Date is invalid');
+        } else if (inputDate > today) {
             errors.push('Date cannot be in the future');
         }
     }
