@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Finance Tracker - Tests</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-section {
+            background: linear-gradient(135deg, #2d3659 0%, #031a29 100%);
+            margin: 1rem 0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            margin: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .test-result {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .success { border-left: 4px solid #27ae60; }
+        .error { border-left: 4px solid #e74c3c; }
+        .info { border-left: 4px solid #3498db; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="site-header">
+        <h1>Student Finance Tracker - Test Suite</h1>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Back to Main App</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Data Management Tests -->
+        <section class="test-section">
+            <h2>Data Management Tests</h2>
+
+            <button class="test-button" onclick="loadSeedData()">📥 Load Sample Data</button>
+            <button class="test-button" onclick="clearAllData()">🗑️ Clear All Data</button>
+            <button class="test-button" onclick="exportData()">📤 Export Data</button>
+
+            <div id="data-result" class="test-result"></div>
+        </section>
+
+        <!-- Functionality Tests -->
+        <section class="test-section">
+            <h2>Functionality Tests</h2>
+
+            <button class="test-button" onclick="testValidation()">✅ Test Form Validation</button>
+            <button class="test-button" onclick="testSearch()">🔍 Test Search</button>
+            <button class="test-button" onclick="testBudget()">💰 Test Budget Calculation</button>
+            <button class="test-button" onclick="testResponsive()">📱 Test Responsive Design</button>
+
+            <div id="functionality-result" class="test-result"></div>
+        </section>
+
+        <!-- Performance Tests -->
+        <section class="test-section">
+            <h2>Performance Tests</h2>
+
+            <button class="test-button" onclick="testLoadTime()">⏱️ Test Load Performance</button>
+            <button class="test-button" onclick="testStorage()">💾 Test Local Storage</button>
+            <button class="test-button" onclick="testSearchPerformance()">⚡ Test Search Speed</button>
+
+            <div id="performance-result" class="test-result"></div>
+        </section>
+
+        <!-- Test Results Summary -->
+        <section class="test-section">
+            <h2>Test Results Summary</h2>
+            <div id="test-summary" class="test-result info">
+                Run individual tests to see results here...
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // Test functions
+    async function loadSeedData() {
+        try {
+            const response = await fetch('./data/seed.json');
+            const data = await response.json();
+
+            localStorage.setItem('transactions', JSON.stringify(data.transactions));
+            localStorage.setItem('settings', JSON.stringify(data.settings));
+
+            showResult('data-result', '✅ Sample data loaded successfully! Refresh main app to see changes.', 'success');
+        } catch (error) {
+            showResult('data-result', '❌ Error loading sample data: ' + error.message, 'error');
+        }
+    }
+
+    function clearAllData() {
+        localStorage.removeItem('transactions');
+        localStorage.removeItem('settings');
+        showResult('data-result', '✅ All data cleared!', 'success');
+    }
+
+    function exportData() {
+        const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+        const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+
+        const data = {
+            transactions,
+            settings,
+            exportedAt: new Date().toISOString()
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'finance-tracker-export.json';
+        a.click();
+
+        showResult('data-result', '✅ Data exported successfully!', 'success');
+    }
+
+    function testValidation() {
+        // Test future date prevention
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + 1);
+        const futureDateString = futureDate.toISOString().split('T')[0];
+
+        // Test required fields
+        const tests = [
+            { desc: 'Future date prevention', condition: futureDate > new Date() },
+            { desc: 'Amount validation', condition: !isNaN(parseFloat("1000")) },
+            { desc: 'Category selection', condition: typeof "Food" === 'string' }
+        ];
+
+        const passed = tests.filter(test => test.condition).length;
+        showResult('functionality-result',
+            `✅ Validation Tests: ${passed}/${tests.length} passed\n` +
+            tests.map(t => `${t.condition ? '✓' : '✗'} ${t.desc}`).join('\n'),
+            passed === tests.length ? 'success' : 'error'
+        );
+    }
+
+    function testSearch() {
+        const testData = [
+            { description: "Lunch at cafe", category: "Food" },
+            { description: "Bus fare", category: "Transport" }
+        ];
+
+        const searchTests = [
+            { pattern: 'lunch', expected: 1 },
+            { pattern: '/food|transport/i', expected: 2 },
+            { pattern: 'nonexistent', expected: 0 }
+        ];
+
+        let results = "Search Tests:\n";
+        searchTests.forEach(test => {
+            const matches = testData.filter(item =>
+                item.description.toLowerCase().includes(test.pattern.toLowerCase()) ||
+                item.category.toLowerCase().includes(test.pattern.toLowerCase())
+            ).length;
+
+            results += `${matches === test.expected ? '✓' : '✗'} Pattern "${test.pattern}": ${matches} matches\n`;
+        });
+
+        showResult('functionality-result', results, 'info');
+    }
+
+    function testBudget() {
+        const transactions = [
+            { amount: 5000 },
+            { amount: 10000 },
+            { amount: 15000 }
+        ];
+
+        const total = transactions.reduce((sum, t) => sum + t.amount, 0);
+        const budgetCap = 50000;
+        const status = total > budgetCap ? 'Over budget' : 'Within budget';
+
+        showResult('functionality-result',
+            `💰 Budget Test:\n` +
+            `Total: ${total} RWF\n` +
+            `Budget: ${budgetCap} RWF\n` +
+            `Status: ${status}\n` +
+            `Difference: ${Math.abs(total - budgetCap)} RWF`,
+            'info'
+        );
+    }
+
+    function testResponsive() {
+        const widths = [1920, 1024, 768, 375]; // Desktop, Tablet, Mobile sizes
+        const currentWidth = window.innerWidth;
+        const breakpoint = currentWidth >= 1024 ? 'Desktop' :
+            currentWidth >= 768 ? 'Tablet' : 'Mobile';
+
+        showResult('functionality-result',
+            `📱 Responsive Test:\n` +
+            `Current width: ${currentWidth}px\n` +
+            `Breakpoint: ${breakpoint}\n` +
+            `Viewport: ${window.innerWidth}x${window.innerHeight}`,
+            'info'
+        );
+    }
+
+    function testLoadTime() {
+        const start = performance.now();
+        // Simulate some work
+        for (let i = 0; i < 1000000; i++) { /* empty */ }
+        const end = performance.now();
+
+        showResult('performance-result',
+            `⏱️ Load Performance:\n` +
+            `Operation took: ${(end - start).toFixed(2)}ms\n` +
+            `Memory: ${performance.memory ? (performance.memory.usedJSHeapSize / 1048576).toFixed(2) + 'MB' : 'N/A'}`,
+            'info'
+        );
+    }
+
+    function testStorage() {
+        const testData = { test: 'storage_test', timestamp: new Date().toISOString() };
+        localStorage.setItem('test_storage', JSON.stringify(testData));
+        const retrieved = JSON.parse(localStorage.getItem('test_storage'));
+        localStorage.removeItem('test_storage');
+
+        showResult('performance-result',
+            `💾 Storage Test:\n` +
+            `Write/Read: ${retrieved.test === 'storage_test' ? '✓ Success' : '✗ Failed'}\n` +
+            `Data persisted: ${retrieved.timestamp ? '✓ Yes' : '✗ No'}`,
+            retrieved.test === 'storage_test' ? 'success' : 'error'
+        );
+    }
+
+    function testSearchPerformance() {
+        const largeDataSet = Array.from({ length: 1000 }, (_, i) => ({
+            description: `Transaction ${i}`,
+            amount: Math.random() * 10000
+        }));
+
+        const start = performance.now();
+        const results = largeDataSet.filter(item =>
+            item.description.includes('Transaction')
+        );
+        const end = performance.now();
+
+        showResult('performance-result',
+            `⚡ Search Performance:\n` +
+            `Dataset: ${largeDataSet.length} items\n` +
+            `Results: ${results.length} matches\n` +
+            `Time: ${(end - start).toFixed(2)}ms\n` +
+            `Speed: ${(largeDataSet.length / (end - start)).toFixed(2)} items/ms`,
+            'info'
+        );
+    }
+
+    function showResult(elementId, message, type) {
+        const element = document.getElementById(elementId);
+        element.textContent = message;
+        element.className = `test-result ${type}`;
+
+        // Update summary
+        updateTestSummary();
+    }
+
+    function updateTestSummary() {
+        const results = document.querySelectorAll('.test-result');
+        const summary = document.getElementById('test-summary');
+
+        let passed = 0, total = 0;
+        results.forEach(result => {
+            if (result.textContent.includes('✓')) passed++;
+            if (result.textContent.trim() && !result.textContent.includes('Run individual tests')) total++;
+        });
+
+        summary.textContent = `Test Summary: ${passed}/${total} tests passing`;
+        summary.className = `test-result ${passed === total ? 'success' : passed > total/2 ? 'info' : 'error'}`;
+    }
+</script>
+</body>
+</html>

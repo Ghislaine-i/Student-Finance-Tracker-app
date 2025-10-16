@@ -1,0 +1,48 @@
+{
+  "transactions": [
+    {
+      "id": "1",
+      "description": "Lunch at campus cafeteria",
+      "amount": 3500,
+      "category": "Food",
+      "date": "2024-01-15",
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    },
+    {
+      "id": "2",
+      "description": "Textbooks for semester",
+      "amount": 45000,
+      "category": "Books",
+      "date": "2024-01-14",
+      "createdAt": "2024-01-14T14:20:00.000Z"
+    },
+    {
+      "id": "3",
+      "description": "Bus transport weekly pass",
+      "amount": 5000,
+      "category": "Transport",
+      "date": "2024-01-13",
+      "createdAt": "2024-01-13T09:15:00.000Z"
+    },
+    {
+      "id": "4",
+      "description": "Coffee with study group",
+      "amount": 2000,
+      "category": "Food",
+      "date": "2024-01-12",
+      "createdAt": "2024-01-12T16:45:00.000Z"
+    },
+    {
+      "id": "5",
+      "description": "Mobile data bundle",
+      "amount": 3000,
+      "category": "Utilities",
+      "date": "2024-01-11",
+      "createdAt": "2024-01-11T11:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "currencyRate": 1448,
+    "budgetCap": 100000
+  }
+}
