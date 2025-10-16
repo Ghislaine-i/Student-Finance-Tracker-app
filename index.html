@@ -35,7 +35,7 @@
             Add transactions, view statistics, and stay on top of your budget — all from one place.
         </p>
         <div class="contact-info">
-            <p><strong>Contact:</strong> g.ineza@alustudent.com | <a href="https://github.com/Ghislaine-i" target="_blank">GitHub</a></p>
+            <p><strong>Contact:</strong> g.ineza@alustudent.com | <a href="https://github.com/Ghislaine-i" target="_blank" rel="noopener noreferrer">GitHub</a></p>
         </div>
     </section>
 
@@ -123,31 +123,52 @@
     <section id="records" aria-labelledby="records-heading">
         <h2 id="records-heading">Transaction Records</h2>
 
-        <div class="search-bar">
+        <div class="search-section">
             <label for="search">Search:</label>
-            <input type="text" id="search" placeholder="Search descriptions or categories..." />
+            <input
+                    type="text"
+                    id="search"
+                    placeholder="Search descriptions, categories, amounts... or use regex like /food/i"
+                    aria-describedby="searchHelp"
+            >
+
             <div class="search-options">
                 <label>
-                    <input type="checkbox" id="regex-toggle"> Use regex
+                    <input type="checkbox" id="regex-toggle"> Use regex patterns
                 </label>
-                <small class="search-hint">Try: /food|coffee/i for advanced search</small>
             </div>
+
+            <small id="searchHelp" class="search-hint">
+                Try: <code>food</code> or <code>/lunch|coffee/i</code> or <code>/\d+\.\d{2}/</code>
+            </small>
+
+            <!-- This will be created dynamically -->
+            <div id="search-feedback" aria-live="polite"></div>
+            <div id="search-stats" class="search-stats"></div>
         </div>
 
-        <table id="records-table" aria-describedby="records-heading">
-            <thead>
-            <tr>
-                <th scope="col">Description</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Category</th>
-                <th scope="col">Date</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody id="records-body">
-            <!-- Populated by JS -->
-            </tbody>
-        </table>
+        <!-- Mobile Cards View -->
+        <div id="records-cards" class="records-cards">
+            <!-- Will be populated by JavaScript for mobile -->
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="table-container">
+            <table id="records-table" aria-describedby="records-heading">
+                <thead>
+                <tr>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="records-body">
+                <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <!-- Settings Section -->
@@ -165,8 +186,8 @@
         <form id="settings-form">
             <div class="form-group">
                 <label for="currency-rate">Exchange Rate (1 USD = ? RWF)</label>
-                <input type="number" id="currency-rate" step="0.01" min="1" placeholder="e.g., 1200" />
-                <small class="field-hint">Current rate: ~1200 RWF per USD</small>
+                <input type="number" id="currency-rate" step="0.01" min="1" placeholder="e.g., 1448" />
+                <small class="field-hint">Current rate: ~1448 RWF per USD</small>
             </div>
 
             <div class="form-group">
@@ -175,7 +196,9 @@
                 <small class="field-hint">Set 0 to disable budget warnings</small>
             </div>
 
-            <button type="button" id="save-settings">Save Settings</button>
+            <div class="form-buttons">
+                <button type="button" id="save-settings">Save Settings</button>
+            </div>
         </form>
     </section>
 </main>

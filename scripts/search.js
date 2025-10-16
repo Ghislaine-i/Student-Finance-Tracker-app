@@ -63,7 +63,7 @@ export function filterTransactions(transactions, searchPattern) {
         return transactions;
     }
 
-    console.log(`Filtering transactions with regex: ${regex}`);
+    console.log(`Filtering transactions with regex:`, regex);
 
     const filtered = transactions.filter(transaction => {
         // Search in multiple fields

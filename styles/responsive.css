@@ -1,175 +1,56 @@
 /* ===========================
-   MOBILE FIRST (Default)
+   RESPONSIVE STYLES
+   Mobile First Approach
 =========================== */
 
-/* Hide table on mobile, show cards */
-#records-table {
-    display: none;
-}
-
-.record-card {
-    background: #f8f9fa;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    border-left: 4px solid #3498db;
-}
-
 /* ===========================
-   TABLET (768px+)
-=========================== */
-@media (min-width: 768px) {
-    .site-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 2rem;
-    }
-
-    .site-header h1 {
-        margin-bottom: 0;
-        font-size: 1.5rem;
-    }
-
-    #stats {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    .form-group {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .form-group label {
-        margin-bottom: 0;
-        text-align: right;
-    }
-
-    /* Show table actions inline */
-    .btn-edit, .btn-delete {
-        width: auto;
-        padding: 0.4rem 0.8rem;
-    }
-
-    /* Adjust chart size */
-    #weekly-chart {
-        height: 180px;
-    }
-}
-
-/* ===========================
-   DESKTOP (1024px+)
-=========================== */
-@media (min-width: 1024px) {
-    main {
-        padding: 1.5rem;
-    }
-
-    /* Show table, hide cards */
-    #records-table {
-        display: table;
-    }
-
-    .record-card {
-        display: none;
-    }
-
-    /* Multi-column layout for sections */
-    .section-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        align-items: start;
-    }
-
-    #add-record {
-        grid-column: 1;
-    }
-
-    #dashboard {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    #records {
-        grid-column: 1 / -1;
-    }
-
-    /* Improve table readability */
-    table {
-        font-size: 0.9rem;
-    }
-
-    th, td {
-        padding: 0.85rem;
-    }
-
-    /* Larger chart */
-    #weekly-chart {
-        height: 200px;
-    }
-}
-
-/* ===========================
-   LARGE DESKTOP (1200px+)
-=========================== */
-@media (min-width: 1200px) {
-    .site-header h1 {
-        font-size: 1.75rem;
-    }
-
-    .main-nav ul {
-        gap: 2rem;
-    }
-
-    section {
-        padding: 1.5rem;
-    }
-
-    /* Larger stats on big screens */
-    .stat-card {
-        padding: 1rem;
-    }
-
-    .stat-card h3 {
-        font-size: 0.8rem;
-    }
-
-    .stat-card p {
-        font-size: 1.2rem;
-    }
-}
-
-/* ===========================
-   SMALL MOBILE (360px and below)
+   SMALL MOBILE (max 360px)
 =========================== */
 @media (max-width: 360px) {
     .site-header {
-        padding: 0.75rem;
+        padding: 0.75rem 0.5rem;
     }
 
     .site-header h1 {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
     }
 
     .main-nav ul {
-        gap: 0.75rem;
+        gap: 0.25rem;
+    }
+
+    .main-nav a {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
     }
 
     main {
-        padding: 0.5rem;
+        padding: 0.25rem;
     }
 
     section {
-        padding: 1rem;
-        margin: 0.5rem 0;
+        padding: 0.75rem;
+        margin: 0.25rem 0;
+    }
+
+    section h2 {
+        font-size: 1.1rem;
     }
 
     #stats {
-        grid-template-columns: 1fr;
         gap: 0.5rem;
+    }
+
+    .stat-card {
+        padding: 0.75rem;
+    }
+
+    .stat-card h3 {
+        font-size: 0.7rem;
+    }
+
+    .stat-card p {
+        font-size: 1.1rem;
     }
 
     .chart-container {
@@ -180,40 +61,564 @@
         height: 140px;
     }
 
-    .search-options {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
+    input, select {
+        padding: 0.6rem;
+        font-size: 0.85rem;
     }
 
-    .chart-legend {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: center;
+    button {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.9rem;
+    }
+
+    .record-card {
+        padding: 0.75rem;
+    }
+
+    .record-card p {
+        font-size: 0.85rem;
+    }
+
+    .record-card strong {
+        font-size: 0.8rem;
+        min-width: 80px;
     }
 }
+
+/* ===========================
+   MOBILE (361px - 767px)
+   This is the default mobile view
+=========================== */
+@media (min-width: 361px) and (max-width: 767px) {
+    .site-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .main-nav a {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.85rem;
+    }
+
+    #stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-card p {
+        font-size: 1.35rem;
+    }
+
+    #weekly-chart {
+        height: 180px;
+    }
+}
+
+/* ===========================
+   TABLET (768px - 1023px)
+=========================== */
+@media (min-width: 768px) {
+    /* Header Layout */
+    .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        text-align: left;
+    }
+
+    .site-header h1 {
+        margin-bottom: 0;
+        font-size: 1.5rem;
+    }
+
+    .main-nav ul {
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .main-nav a {
+        width: auto;
+
+        /* Main Content */
+
+        main {
+            padding: 1rem;
+        }
+
+        section {
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        section h2 {
+            font-size: 1.4rem;
+        }
+
+        /* Stats Grid */
+
+        #stats {
+            grid-template-columns: repeat(2, 1fr);
+
+        }
+
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .stat-card p {
+            font-size: 1.5rem;
+        }
+
+        /* Chart */
+
+        #weekly-chart {
+            height: 200px;
+        }
+
+        .chart-legend {
+            gap: 1.5rem;
+        }
+
+        /* Forms - Horizontal Layout */
+
+        .form-group {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .form-group label {
+            text-align: right;
+            margin-bottom: 0;
+        }
+
+        .error-msg,
+        .field-hint {
+            grid-column: 2;
+        }
+
+        button[type="submit"],
+        button[type="button"] {
+            width: auto;
+            margin-left: 180px;
+            padding: 0.75rem 2rem;
+        }
+
+        .form-buttons {
+            flex-direction: row;
+        }
+
+        .form-buttons button {
+            margin-left: 0;
+        }
+
+        /* Show table, hide cards on tablet */
+
+        #records-table {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .records-cards {
+            display: none;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: bold
+
+        }
+    }
+    /* Search */
+    .search-options {
+        flex-direction: row;
+    }
+
+    /* Settings */
+    .settings-explanation {
+        padding: 1.5rem;
+    }
+}
+
+/* RECORDS - MOBILE: CARDS */
+#records-table {
+    display: none; /* Hide table on mobile */
+}
+
+.records-cards {
+    display: block; /* Show cards on mobile */
+}
+
+.record-card {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.record-card-header {
+    display: flex;
+    justify-content: between;
+    align-items: start;
+    margin-bottom: 0.5rem;
+}
+
+.record-card-description {
+    font-weight: bold;
+    font-size: 1.1rem;
+    flex: 1;
+}
+
+.record-card-amount {
+    text-align: right;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.record-card-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.record-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.record-card-actions button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background: #3498db;
+    color: white;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+}
+
+/* TABLET STYLES (768px and up) */
+@media (min-width: 768px) {
+    .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+    }
+
+    .site-header h1 {
+        margin-bottom: 0;
+    }
+
+    .main-nav ul {
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .main-nav a {
+        width: auto;
+    }
+
+    #stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-group {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .form-group label {
+        text-align: right;
+        margin-bottom: 0;
+    }
+
+    #add-btn {
+        width: auto;
+        margin-left: auto;
+        display: block;
+    }
+
+    /* Show table, hide cards on tablet */
+    #records-table {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    .records-cards {
+        display: none;
+    }
+
+    th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background: #f8f9fa;
+        font-weight: bold;
+    }
+}
+
+/* DESKTOP STYLES (1024px and up) */
+@media (min-width: 1024px) {
+    #stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .site-header h1 {
+        font-size: 1.8rem;
+    }
+
+    main {
+        padding: 2rem;
+    }
+
+    section {
+        padding: 2rem;
+    }
+}
+
+/* LARGE DESKTOP (1200px and up) */
+@media (min-width: 1200px) {
+    .stat-card {
+        padding: 1.5rem;
+    }
+
+    .stat-card p {
+        font-size: 1.5rem;
+    }
+}
+
+.record-card {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.record-card-header {
+    display: flex;
+    justify-content: between;
+    align-items: start;
+    margin-bottom: 0.5rem;
+}
+
+.record-card-description {
+    font-weight: bold;
+    font-size: 1.1rem;
+    flex: 1;
+}
+
+.record-card-amount {
+    text-align: right;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.record-card-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.record-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.record-card-actions button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background: #3498db;
+    color: white;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+}
+
 
 /* ===========================
    PRINT STYLES
 =========================== */
 @media print {
+    /* Hide interactive elements */
     .site-header,
     .main-nav,
     #add-record,
     #settings,
-    .search-bar,
+    .search-section,
     .btn-edit,
-    .btn-delete {
+    .btn-delete,
+    button,
+    .skip-link {
         display: none !important;
     }
 
+    /* Reset backgrounds and colors */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
     section {
-        box-shadow: none;
-        border: 1px solid #000;
-        margin: 0.5rem 0;
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+        margin: 0.5rem 0 !important;
+        page-break-inside: avoid;
+        background: white !important;
+    }
+
+    /* Force table display */
+    #records-table {
+        display: table !important;
+    }
+
+    .records-cards {
+        display: none !important;
+    }
+
+    table {
+        border: 1px solid #000 !important;
+    }
+
+    th {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+    }
+
+    td {
+        border: 1px solid #000 !important;
+    }
+
+    /* Chart container */
+    .chart-container {
+        border: 1px solid #ccc !important;
+        background: white !important;
+        page-break-inside: avoid;
+    }
+
+    /* Footer */
+    footer {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+        margin-top: 1rem !important;
+        page-break-before: always;
+    }
+
+    /* Stat cards */
+    .stat-card {
+        background: white !important;
+        border: 1px solid #000 !important;
+        page-break-inside: avoid;
+    }
+
+    /* Remove shadows and effects */
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}
+
+/* ===========================
+   HIGH CONTRAST MODE
+=========================== */
+@media (prefers-contrast: high) {
+    .site-header,
+    button,
+    .stat-card,
+    section {
+        border: 2px solid currentColor !important;
+    }
+
+    a:focus,
+    button:focus,
+    input:focus,
+    select:focus {
+        outline: 3px solid currentColor !important;
+        outline-offset: 3px !important;
+    }
+}
+
+/* ===========================
+   DARK MODE SUPPORT (Optional)
+=========================== */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+        color: #e0e0e0;
+    }
+
+    section {
+        background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+        color: #e0e0e0;
+    }
+
+    input,
+    select {
+        background: #2a2a3e;
+        color: #e0e0e0;
+        border-color: #3a3a5e;
+    }
+
+    table {
+        background: #1a1a2e;
+        color: #e0e0e0;
+    }
+
+    td {
+        border-bottom-color: #3a3a5e;
+    }
+
+    .record-card {
+        background: #2a2a3e;
+        color: #e0e0e0;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
+        color: #e0e0e0;
+    }
+
+    .stat-card p {
+        color: #e0e0e0;
     }
 
     .chart-container {
-        border: 1px solid #ccc;
+        background: linear-gradient(135deg, #2a2a3e 0%, #1a1a2e 100%);
     }
 }

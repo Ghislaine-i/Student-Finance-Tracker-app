@@ -33,7 +33,7 @@ function initializeApp() {
 
     // Set default exchange rate if not set
     if (!settings.currencyRate) {
-        settings.currencyRate = 1200;
+        settings.currencyRate = 1448;
         saveSettings(settings);
     }
 
@@ -271,7 +271,7 @@ function renderTransactions() {
     tbody.innerHTML = '';
 
     const transactionsToRender = currentSearch ? filteredTransactions : transactions;
-    const exchangeRate = settings.currencyRate || 1200;
+    const exchangeRate = settings.currencyRate || 1448;
 
     console.log('Rendering transactions:', transactionsToRender.length);
 
@@ -288,7 +288,18 @@ function renderTransactions() {
         return;
     }
 
-    const searchRegex = compileRegex(currentSearch);
+    // Compile regex for highlighting if searching
+    let searchRegex = null;
+    if (currentSearch) {
+        const useRegex = document.getElementById('regex-toggle')?.checked || false;
+        if (useRegex) {
+            searchRegex = compileRegex(currentSearch);
+        } else {
+            // For simple text search, create a case-insensitive regex
+            const escapedPattern = currentSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            searchRegex = new RegExp(escapedPattern, 'gi');
+        }
+    }
 
     // Sort transactions by date (newest first)
     const sortedTransactions = [...transactionsToRender].sort((a, b) =>
@@ -298,12 +309,12 @@ function renderTransactions() {
     sortedTransactions.forEach(transaction => {
         const row = document.createElement('tr');
 
-        // Highlight matches if searching
-        const description = currentSearch && searchRegex ?
+        // Apply highlighting
+        const description = searchRegex ?
             highlightMatches(transaction.description, searchRegex) :
             escapeHtml(transaction.description);
 
-        const category = currentSearch && searchRegex ?
+        const category = searchRegex ?
             highlightMatches(transaction.category, searchRegex) :
             escapeHtml(transaction.category);
 
@@ -353,7 +364,7 @@ function updateDashboard() {
     }, 0);
 
     // Convert to USD using exchange rate
-    const exchangeRate = settings.currencyRate || 1200;
+    const exchangeRate = settings.currencyRate || 1448;
     const totalAmountUSD = (totalAmountRWF / exchangeRate).toFixed(2);
 
     console.log('Total amounts - RWF:', totalAmountRWF, 'USD:', totalAmountUSD, 'Rate:', exchangeRate);
@@ -551,23 +562,29 @@ function getLast7DaysSpending() {
     return { days, total };
 }
 
-// Search functionality
 function handleSearch(event) {
-    const searchInput = document.getElementById('search').value;
-    const useRegex = document.getElementById('regex-toggle')?.checked || false;
-    currentSearch = searchInput;
+    const searchInput = document.getElementById('search');
+    if (!searchInput) {
+        console.error('Search input not found!');
+        return;
+    }
 
-    console.log('Searching:', searchInput, 'Regex:', useRegex);
+    const searchTerm = searchInput.value;
+    const useRegex = document.getElementById('regex-toggle')?.checked || false;
+    currentSearch = searchTerm;
+
+    console.log('Searching:', searchTerm, 'Regex:', useRegex);
 
     // Filter transactions
-    if (searchInput.trim()) {
+    if (searchTerm.trim()) {
         if (useRegex) {
-            filteredTransactions = filterTransactions(transactions, searchInput);
-            const regex = compileRegex(searchInput);
+            // Use regex search
+            filteredTransactions = filterTransactions(transactions, searchTerm);
+            const regex = compileRegex(searchTerm);
             showSearchFeedback(regex, filteredTransactions.length, true);
         } else {
             // Simple text search
-            const lowerSearch = searchInput.toLowerCase();
+            const lowerSearch = searchTerm.toLowerCase();
             filteredTransactions = transactions.filter(transaction => {
                 return transaction.description.toLowerCase().includes(lowerSearch) ||
                     transaction.category.toLowerCase().includes(lowerSearch) ||
@@ -581,7 +598,9 @@ function handleSearch(event) {
         clearSearchFeedback();
     }
 
-    // Re-render transactions
+    console.log(`Search results: ${filteredTransactions.length} transactions found`);
+
+    // Re-render transactions with highlighting
     renderTransactions();
     updateSearchStats();
 }
@@ -622,7 +641,7 @@ function createSearchFeedbackElement() {
     feedbackEl.className = 'search-feedback';
     feedbackEl.setAttribute('aria-live', 'polite');
 
-    const searchContainer = document.querySelector('.search-bar');
+    const searchContainer = document.querySelector('.search-section');
     if (searchContainer) {
         searchContainer.appendChild(feedbackEl);
     }
@@ -648,7 +667,7 @@ function createSearchStatsElement() {
     statsEl.id = 'search-stats';
     statsEl.className = 'search-stats';
 
-    const searchBar = document.querySelector('.search-bar');
+    const searchBar = document.querySelector('.search-section');
     if (searchBar && searchBar.parentNode) {
         searchBar.parentNode.insertBefore(statsEl, searchBar.nextSibling);
     }
@@ -658,7 +677,7 @@ function createSearchStatsElement() {
 
 // Settings functionality
 function handleSaveSettings() {
-    const currencyRate = parseFloat(document.getElementById('currency-rate').value) || 1200;
+    const currencyRate = parseFloat(document.getElementById('currency-rate').value) || 1448;
     const budgetCap = parseFloat(document.getElementById('budget-cap').value) || 0;
 
     // Validate settings
@@ -690,7 +709,7 @@ function loadSettingsForm() {
     const budgetCapEl = document.getElementById('budget-cap');
 
     if (currencyRateEl && budgetCapEl) {
-        currencyRateEl.value = settings.currencyRate || 1200;
+        currencyRateEl.value = settings.currencyRate || 1448;
         budgetCapEl.value = settings.budgetCap || '';
 
         console.log('Loaded settings form - Rate:', currencyRateEl.value, 'Cap:', budgetCapEl.value);
@@ -771,19 +790,52 @@ window.deleteTransaction = function(id) {
         console.log('Deleted transaction:', id);
     }
 };
+function renderMobileCards() {
+    const cardsContainer = document.getElementById('records-cards');
+    if (!cardsContainer) return;
 
-// Demo function to show exchange rate in action
-window.demoExchangeRate = function() {
-    const exchangeRate = settings.currencyRate || 1200;
-    const sampleAmounts = [5000, 10000, 25000, 50000];
+    const transactionsToRender = currentSearch ? filteredTransactions : transactions;
+    const exchangeRate = settings.currencyRate || 1448;
 
-    let demoMessage = `Current Exchange Rate: 1 USD = ${exchangeRate} RWF\n\n`;
-    demoMessage += 'Example conversions:\n';
+    cardsContainer.innerHTML = '';
 
-    sampleAmounts.forEach(amount => {
-        const usdAmount = (amount / exchangeRate).toFixed(2);
-        demoMessage += `${formatAmount(amount)} RWF = $${usdAmount} USD\n`;
+    if (transactionsToRender.length === 0) {
+        const noResultsMessage = currentSearch ?
+            'No transactions match your search' :
+            'No transactions yet. Add your first transaction above!';
+        cardsContainer.innerHTML = `
+            <div style="text-align: center; padding: 3rem; color: #666; font-style: italic;">
+                ${noResultsMessage}
+            </div>`;
+        return;
+    }
+
+    // Sort transactions by date (newest first)
+    const sortedTransactions = [...transactionsToRender].sort((a, b) =>
+        new Date(b.date) - new Date(a.date)
+    );
+
+    sortedTransactions.forEach(transaction => {
+        const amountUSD = (transaction.amount / exchangeRate).toFixed(2);
+        const card = document.createElement('div');
+        card.className = 'record-card';
+        card.innerHTML = `
+            <div class="record-card-header">
+                <h3 class="record-card-description">${escapeHtml(transaction.description)}</h3>
+                <div class="record-card-amount">
+                    ${formatAmount(transaction.amount)} RWF
+                    <div class="record-card-usd">≈ $${amountUSD} USD</div>
+                </div>
+            </div>
+            <div class="record-card-details">
+                <span class="record-card-category">${escapeHtml(transaction.category)}</span>
+                <span class="record-card-date">${formatDate(transaction.date)}</span>
+            </div>
+            <div class="record-card-actions">
+                <button onclick="editTransaction('${transaction.id}')" class="btn-edit">Edit</button>
+                <button onclick="deleteTransaction('${transaction.id}')" class="btn-delete">Delete</button>
+            </div>
+        `;
+        cardsContainer.appendChild(card);
     });
-
-    showMessage(demoMessage, 'info');
-};
+}

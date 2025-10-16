@@ -49,13 +49,13 @@ export function loadSettings() {
         }
         console.log('No settings found, returning defaults');
         return {
-            currencyRate: 1200,
+            currencyRate: 1448,
             budgetCap: 0,
             baseCurrency: 'RWF'
         };
     } catch (error) {
         console.error('Error loading settings:', error);
-        return { currencyRate: 1200, budgetCap: 0, baseCurrency: 'RWF' };
+        return { currencyRate: 1448, budgetCap: 0, baseCurrency: 'RWF' };
     }
 }
 
