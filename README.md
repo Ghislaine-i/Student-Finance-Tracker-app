@@ -2,10 +2,6 @@
 
 A comprehensive web application for students to track daily expenses, analyze spending patterns, and manage budgets effectively. Built with accessibility in mind and designed for both desktop and mobile use.
 
-## 🌐 Live Demo
-
-**Main Application**: [https://ghislaine-i.github.io/Student-Finance-Tracker-app/](https://ghislaine-i.github.io/Student-Finance-Tracker-app/
-
 ## 📋 Overview
 
 Student Finance Tracker helps students monitor daily spending with powerful features like regex search, budget alerts, and multi-currency support. The application runs entirely in your browser with no server required, ensuring complete privacy and instant access.
@@ -253,12 +249,6 @@ Open browser console (F12) to access debug information:
 - Performance metrics
 - Error messages with stack traces
 
-## 📞 Support & Contact
-
-- **Email**: [Your Email]
-- **GitHub Issues**: [Repository Issues Page]
-- **Documentation**: Inline code comments and this README
-
 ### Feature Requests & Bug Reports
 When reporting issues, please include:
 1. Browser version and OS
@@ -292,6 +282,7 @@ To deploy to other platforms:
 3. Test functionality in target environment
  
 **###DEMO VIDEO LINK**
+
 https://youtu.be/RDPfU5Ive3I?si=K29QicmI7M7tFdka
 
 ---
